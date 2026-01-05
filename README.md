@@ -52,5 +52,4 @@ This repository is **not** a polished product but rather:
 - A demonstration of how I have learnt and applied new backend technologies.
 - A tool to practice system design thinking at a small but non-trivial scale.
 - A portfolio piece that can be discussed in detail during recruitment processes.
-> If you are reviewing this as part of recruitment:
-> Feel free to look at the commit history to see my progression and development over time.
+> If you are reviewing this as part of recruitment, feel free to look at the commit history to see my progression and development over time.
