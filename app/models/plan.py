@@ -5,5 +5,5 @@ class Plan(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     name: str
     price: float
-    billing_interval_days: int
-    created_at: datetime = Field(default_factory=datetime.now)
+    interval_days: int
+    date_created: datetime = Field(default_factory=datetime.now)
