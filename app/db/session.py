@@ -12,13 +12,13 @@ def create_users():
     user2 = User(email="bbanner@email.com", password_hash="password2")
     user3 = User(email="pparker@email.com", password_hash="password3")
 
-    session = Session(engine)
+    with Session(engine) as session:
+        session.add(user1)
+        session.add(user2)
+        session.add(user3)
 
-    session.add(user1)
-    session.add(user2)
-    session.add(user3)
+        session.commit()
 
-    session.commit()
 
 def main():
     create_tables()
