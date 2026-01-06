@@ -40,7 +40,7 @@ Core technolgies are:
 - **Language**: Python
 - **Web Framework**: FastAPI
 - **Database**: PostgreSQL
-- **ORM Layer**: SQLAlchemy
+- **ORM Layer**: SQLModel
 - **Auth**: JWT based authorisation
 - **Testing**: pytest
 - **Containerisation**: Docker (Stretch goal)
