@@ -1,9 +1,9 @@
-from sqlmodel import Field, SQLModel
-from datetime import datetime
+from sqlmodel import SQLModel, Field
 
 class Plan(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     name: str
     price: float
     interval_days: int
-    date_created: datetime = Field(default_factory=datetime.now)
+    
+    org_id: int | None = Field(default=None, foreign_key="organisation.id")
