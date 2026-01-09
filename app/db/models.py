@@ -17,13 +17,16 @@ class Organisation(SQLModel, table=True):
     owner_id: int = Field(default=None, foreign_key="user.id", ondelete="SET NULL")
     owner: User = Relationship(back_populates="organisations")
 
+    plans: list["Plan"] = Relationship(back_populates="organisation_owner", cascade_delete=True)
+
 class Plan(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     name: str
     price: float
     interval_days: int
     
-    org_id: int | None = Field(default=None, foreign_key="organisation.id")
+    org_id: int | None = Field(default=None, foreign_key="organisation.id", ondelete="CASCADE")
+    organisation_owner: Organisation = Relationship(back_populates="plans")
 
 class Subscription(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
