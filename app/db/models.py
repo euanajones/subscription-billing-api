@@ -1,5 +1,6 @@
-from sqlmodel import SQLModel, Field, Relationship
+from sqlmodel import SQLModel, Field, Relationship, create_engine
 from datetime import datetime
+from config import settings
 
 class User(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
@@ -51,3 +52,9 @@ class Subscription(SQLModel, table=True):
 
     start_date: datetime
     end_date: datetime
+
+connect_args = {"check_same_thread": False}
+engine = create_engine(settings.DATABASE_URL, echo=True, connect_args=connect_args)
+
+def create_tables():
+    SQLModel.metadata.create_all(engine)
