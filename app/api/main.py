@@ -1,20 +1,23 @@
 from fastapi import FastAPI
 from sqlmodel import SQLModel, Session, create_engine, select
-from config import settings
-from models import create_tables, User, Organisation, Plan, Subscription
-
+from app.settings.config import settings
+from app.db.models import User
 
 app = FastAPI()
 
 connect_args = {"check_same_thread": False}
-engine = create_engine(settings.DATABASE_URL, echo=True, connect_args=connect_args)
+engine = create_engine(settings.DATABASE_URL, echo=True)
 
 def create_tables():
     SQLModel.metadata.create_all(engine)
 
+@app.get("/health")
+def health_status():
+    return {"status": "ok"}
+
 @app.on_event("startup")
 def on_startup():
-    create_tables
+    create_tables()
 
 @app.post("/users/add")
 def create_user(user: User):

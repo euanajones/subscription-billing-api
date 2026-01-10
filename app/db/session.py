@@ -1,5 +1,5 @@
 from sqlmodel import SQLModel, Session, create_engine, select, or_, col
-from config import settings
+from app.settings.config import settings
 from typing import Annotated
 from models import User
 from fastapi import Depends
