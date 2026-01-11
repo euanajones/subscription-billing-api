@@ -8,6 +8,7 @@ class UserBase(SQLModel):
 
 class User(UserBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
+    hashed_password: str = Field()
 
     # 1 User : N Organisations
     organisations: None | list["Organisation"] = Relationship(back_populates="owner")
@@ -16,15 +17,16 @@ class User(UserBase, table=True):
     subscriptions: None | list["Subscription"] = Relationship(back_populates="user", cascade_delete=True)
 
 class UserCreate(UserBase):
-    pass
+    password: str
 
 class UserPublic(UserBase):
     id: int
 
 class UserUpdate(SQLModel):
-    first_name: str | None
-    last_name: str | None
-    email: str | None
+    first_name: str | None = None
+    last_name: str | None = None
+    email: str | None = None
+    password: str | None = None
 
 class OrganisationBase(SQLModel):
     name: str

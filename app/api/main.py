@@ -11,6 +11,9 @@ engine = create_engine(settings.DATABASE_URL, echo=True)
 def create_tables():
     SQLModel.metadata.create_all(engine)
 
+def hash_password(password: str) -> str:
+    return f"Unofficially hashed {password}"
+
 @app.get("/health")
 def health_status():
     return {"status": "ok"}
@@ -21,8 +24,10 @@ def on_startup():
 
 @app.post("/users/add", response_model=UserPublic)
 def create_user(user: UserCreate):
+    hashed_password = hash_password(user.password)
     with Session(engine) as session:
-        db_user = User.model_validate(user)
+        extra_data = {"hashed_password": hashed_password}
+        db_user = User.model_validate(user, update=extra_data)
         session.add(db_user)
         session.commit()
         session.refresh(db_user)
