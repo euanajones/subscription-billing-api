@@ -47,6 +47,9 @@ class OrganisationCreate(OrganisationBase):
 class OrganisationPublic(OrganisationBase):
     id: int
 
+class OrganisationUpdate(SQLModel):
+    name: str | None = None
+
 class Plan(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     name: str
