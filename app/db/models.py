@@ -14,6 +14,31 @@ class User(SQLModel, table=True):
     # 1 User : N Subscriptions
     subscriptions: None | list["Subscription"] = Relationship(back_populates="user", cascade_delete=True)
 
+class UserCreate(SQLModel):
+    first_name: str
+    last_name: str
+    email: str
+    password: str
+
+    # 1 User : N Organisations
+    organisations: None | list["Organisation"] = Relationship(back_populates="owner")
+
+    # 1 User : N Subscriptions
+    subscriptions: None | list["Subscription"] = Relationship(back_populates="user", cascade_delete=True)
+
+class UserPublic(SQLModel):
+    id: int
+    first_name: str
+    last_name: str
+    email: str
+    password: str
+
+    # 1 User : N Organisations
+    organisations: None | list["Organisation"] = Relationship(back_populates="owner")
+
+    # 1 User : N Subscriptions
+    subscriptions: None | list["Subscription"] = Relationship(back_populates="user", cascade_delete=True)
+
 class Organisation(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     name: str

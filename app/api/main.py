@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from sqlmodel import SQLModel, Session, create_engine, select
 from app.settings.config import settings
-from app.db.models import User
+from app.db.models import User, UserCreate, UserPublic
 
 app = FastAPI()
 
@@ -19,15 +19,16 @@ def health_status():
 def on_startup():
     create_tables()
 
-@app.post("/users/add")
-def create_user(user: User):
+@app.post("/users/add", response_model=UserPublic)
+def create_user(user: UserCreate):
     with Session(engine) as session:
-        session.add(user)
+        db_user = User.model_validate(user)
+        session.add(db_user)
         session.commit()
-        session.refresh(user)
-        return user
+        session.refresh(db_user)
+        return db_user
     
-@app.get("/users")
+@app.get("/users", response_model=list[UserPublic])
 def get_users():
     with Session(engine) as session:
         users = session.exec(select(User)).all()
