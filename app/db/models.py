@@ -21,6 +21,11 @@ class UserCreate(UserBase):
 class UserPublic(UserBase):
     id: int
 
+class UserUpdate(SQLModel):
+    first_name: str | None
+    last_name: str | None
+    email: str | None
+
 class OrganisationBase(SQLModel):
     name: str
     owner_id: int | None = Field(default=None, foreign_key="user.id", ondelete="SET NULL")
