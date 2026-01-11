@@ -6,14 +6,14 @@ class UserBase(SQLModel):
     last_name: str
     email: str
 
+class User(UserBase, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+
     # 1 User : N Organisations
     organisations: None | list["Organisation"] = Relationship(back_populates="owner")
 
     # 1 User : N Subscriptions
     subscriptions: None | list["Subscription"] = Relationship(back_populates="user", cascade_delete=True)
-
-class User(UserBase, table=True):
-    id: int | None = Field(default=None, primary_key=True)
 
 class UserCreate(UserBase):
     pass
