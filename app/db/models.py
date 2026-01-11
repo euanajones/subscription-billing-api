@@ -21,16 +21,24 @@ class UserCreate(UserBase):
 class UserPublic(UserBase):
     id: int
 
-class Organisation(SQLModel, table=True):
-    id: int | None = Field(default=None, primary_key=True)
+class OrganisationBase(SQLModel):
     name: str
-
     owner_id: int | None = Field(default=None, foreign_key="user.id", ondelete="SET NULL")
+
+class Organisation(OrganisationBase, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    
     # 1 Organisation : 1 User
     owner: User = Relationship(back_populates="organisations")
 
     # 1 Organisation : N Plans
     plans: list["Plan"] = Relationship(back_populates="organisation_owner", cascade_delete=True)
+
+class OrganisationCreate(OrganisationBase):
+    pass
+
+class OrganisationPublic(OrganisationBase):
+    id: int
 
 class Plan(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
