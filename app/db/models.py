@@ -1,43 +1,26 @@
 from sqlmodel import SQLModel, Field, Relationship, create_engine
 from datetime import datetime
 
-class User(SQLModel, table=True):
+class UserBase(SQLModel):
+    first_name: str
+    last_name: str
+    email: str
+
+    # 1 User : N Organisations
+    organisations: None | list["Organisation"] = Relationship(back_populates="owner")
+
+    # 1 User : N Subscriptions
+    subscriptions: None | list["Subscription"] = Relationship(back_populates="user", cascade_delete=True)
+
+
+class User(UserBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
-    first_name: str
-    last_name: str
-    email: str
-    password: str
 
-    # 1 User : N Organisations
-    organisations: None | list["Organisation"] = Relationship(back_populates="owner")
+class UserCreate(UserBase):
+    pass
 
-    # 1 User : N Subscriptions
-    subscriptions: None | list["Subscription"] = Relationship(back_populates="user", cascade_delete=True)
-
-class UserCreate(SQLModel):
-    first_name: str
-    last_name: str
-    email: str
-    password: str
-
-    # 1 User : N Organisations
-    organisations: None | list["Organisation"] = Relationship(back_populates="owner")
-
-    # 1 User : N Subscriptions
-    subscriptions: None | list["Subscription"] = Relationship(back_populates="user", cascade_delete=True)
-
-class UserPublic(SQLModel):
+class UserPublic(UserBase):
     id: int
-    first_name: str
-    last_name: str
-    email: str
-    password: str
-
-    # 1 User : N Organisations
-    organisations: None | list["Organisation"] = Relationship(back_populates="owner")
-
-    # 1 User : N Subscriptions
-    subscriptions: None | list["Subscription"] = Relationship(back_populates="user", cascade_delete=True)
 
 class Organisation(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
