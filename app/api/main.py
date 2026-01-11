@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 from sqlmodel import SQLModel, Session, create_engine, select
 from app.settings.config import settings
 from app.db.models import User, UserCreate, UserPublic
@@ -29,7 +29,7 @@ def create_user(user: UserCreate):
         return db_user
     
 @app.get("/users", response_model=list[UserPublic])
-def get_users():
+def get_users(offset: int = 0, limit: int = Query(default=30, le=100)):
     with Session(engine) as session:
         users = session.exec(select(User)).all()
         return users
