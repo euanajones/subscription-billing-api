@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from sqlmodel import SQLModel, Session, create_engine, select
 from app.settings.config import settings
 from app.db.models import User, UserCreate, UserPublic
@@ -33,3 +33,11 @@ def get_users():
     with Session(engine) as session:
         users = session.exec(select(User)).all()
         return users
+    
+@app.get("/users/{user_id}", response_model=UserPublic)
+def get_user_by_id(user_id: int):
+    with Session(engine) as session:
+        user = session.get(User, user_id)
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found.")
+        return user

@@ -12,7 +12,6 @@ class UserBase(SQLModel):
     # 1 User : N Subscriptions
     subscriptions: None | list["Subscription"] = Relationship(back_populates="user", cascade_delete=True)
 
-
 class User(UserBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
 
