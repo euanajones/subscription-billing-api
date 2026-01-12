@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException, Query, Depends
 from sqlmodel import SQLModel, Session, create_engine, select
 from app.settings.config import settings
-from app.db.models import User, UserCreate, UserPublic, UserUpdate, Organisation, OrganisationCreate, OrganisationPublic
+from app.db.models import User, UserCreate, UserPublic, UserUpdate, Organisation, OrganisationCreate, OrganisationPublic, OrganisationPublicWithOwner
 
 app = FastAPI()
 
@@ -88,7 +88,7 @@ def delete_user_by_id(*, session: Session = Depends(get_session) ,user_id: int):
     session.commit()
     return {"User: {user_id} - Deleted": True}
 
-@app.put("/organisations/create", response_model=OrganisationPublic)
+@app.post("/organisations/create", response_model=OrganisationPublic)
 def create_organisation(
     *, 
     session: Session = Depends(get_session), 
@@ -100,17 +100,17 @@ def create_organisation(
     session.refresh(db_organisation)
     return db_organisation
 
-@app.get("/organisations", response_model=list["OrganisationPublic"])
+@app.get("/organisations", response_model=list[OrganisationPublic])
 def get_organisations(
     *, 
     session: Session = Depends(get_session), 
     offset: int = 0, 
     limit: int = Query(default=30, le=100)
     ):
-    organisations = session.exec(select(Organisation).all())
+    organisations = session.exec(select(Organisation)).all()
     return organisations
 
-@app.get("/organisations/{org_id}", response_model=OrganisationPublic)
+@app.get("/organisations/{org_id}", response_model=OrganisationPublicWithOwner)
 def get_organisation_by_id(*, session: Session = Depends(get_session), org_id: int):
     organisation = session.get(Organisation, org_id)
 
@@ -118,7 +118,7 @@ def get_organisation_by_id(*, session: Session = Depends(get_session), org_id: i
         raise HTTPException(status_code=404, detail=f"Organisation not found.")
     return organisation
 
-@app.get("/organisation/{org_id}/owner", response_model=UserPublic)
+@app.get("/organisations/{org_id}/owner", response_model=UserPublic)
 def get_organisation_owner(*, session: Session = Depends(get_session), org_id: int):
     organisation = session.get(Organisation, org_id)
 

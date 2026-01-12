@@ -58,7 +58,7 @@ class PlanBase(SQLModel):
     price: float
     interval_days: int
     
-    ord_id: int | None = Field(default=None, foreign_key="organisation.id", ondelete="CASCASE")
+    ord_id: int | None = Field(default=None, foreign_key="organisation.id", ondelete="CASCADE")
 
 class Plan(PlanBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
@@ -75,22 +75,8 @@ class PlanCreate(PlanBase):
 class PlanPublic(PlanBase):
     id: int
 
-class Subscription(SQLModel, table=True):
-    id: int | None = Field(default=None, primary_key=True)
-
-    user_id: int | None = Field(default=None, foreign_key="user.id", ondelete="CASCADE")
-    # 1 Subscription : 1 User
-    user: User = Relationship(back_populates="subscriptions")
-
-    plan_id: int | None = Field(default=None, foreign_key="plan.id", ondelete="CASCADE")
-    # 1 Subscription : 1 Plan
-    plan: Plan = Relationship(back_populates="subscriptions")
-
-    start_date: datetime
-    end_date: datetime
-
 class SubscriptionBase(SQLModel):
-    user_id: int |  None = Field(default=None, foreign_key="user.id", ondelete="CASCASE")
+    user_id: int |  None = Field(default=None, foreign_key="user.id", ondelete="CASCADE")
 
     plan_id: int | None = Field(default=None, foreign_key="plan.id", ondelete="CASCADE")
 
