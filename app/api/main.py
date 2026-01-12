@@ -116,5 +116,21 @@ def get_organisation_by_id(*, session: Session = Depends(get_session), org_id: i
 
     if not organisation:
         raise HTTPException(status_code=404, detail=f"Organisation not found.")
-    
     return organisation
+
+@app.get("/organisation/{org_id}/owner", response_model=UserPublic)
+def get_organisation_owner(*, session: Session = Depends(get_session), org_id: int):
+    organisation = session.get(Organisation, org_id)
+
+    if not organisation:
+        raise HTTPException(status_code=404, detail=f"Organisation not found.")
+    owner_id = organisation.owner_id
+
+    if not owner_id:
+        raise HTTPException(status_code=404, detail="Organisation owner not set.")
+
+    owner = session.get(User, owner_id)
+    if not owner:
+        raise HTTPException(status_code=404, detail="Owner not found.")
+
+    return owner
