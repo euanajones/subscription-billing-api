@@ -47,6 +47,9 @@ class OrganisationCreate(OrganisationBase):
 class OrganisationPublic(OrganisationBase):
     id: int
 
+class OrganisationPublicWithOwner(OrganisationPublic):
+    owner: UserPublic | None = None
+
 class OrganisationUpdate(SQLModel):
     name: str | None = None
 
