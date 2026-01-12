@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException, Query, Depends
 from sqlmodel import SQLModel, Session, create_engine, select
 from app.settings.config import settings
-from app.db.models import User, UserCreate, UserPublic, UserUpdate
+from app.db.models import User, UserCreate, UserPublic, UserUpdate, Organisation, OrganisationCreate, OrganisationPublic
 
 app = FastAPI()
 
@@ -26,7 +26,7 @@ def health_status():
 def on_startup():
     create_tables()
 
-@app.post("/users/add", response_model=UserPublic)
+@app.post("/users/create", response_model=UserPublic)
 def create_user(*, session: Session = Depends(get_session), user: UserCreate):
     hashed_password = hash_password(user.password)
     extra_data = {"hashed_password": hashed_password}
@@ -87,3 +87,25 @@ def delete_user_by_id(*, session: Session = Depends(get_session) ,user_id: int):
     session.delete(user)
     session.commit()
     return {"User: {user_id} - Deleted": True}
+
+@app.put("/organisations/create", response_model=OrganisationPublic)
+def create_organisation(
+    *, 
+    session: Session = Depends(get_session), 
+    organisation: OrganisationCreate
+    ):
+    db_organisation = Organisation.model_validate(organisation)
+    session.add(db_organisation)
+    session.commit()
+    session.refresh(db_organisation)
+    return db_organisation
+
+@app.get("/organisations", response_model=list["OrganisationPublic"])
+def get_organisations(
+    *, 
+    session: Session = Depends(get_session), 
+    offset: int = 0, 
+    limit: int = Query(default=30, le=100)
+    ):
+    organisations = session.exec(select(Organisation).all())
+    return organisations
