@@ -50,18 +50,27 @@ class OrganisationPublic(OrganisationBase):
 class OrganisationUpdate(SQLModel):
     name: str | None = None
 
-class Plan(SQLModel, table=True):
-    id: int | None = Field(default=None, primary_key=True)
+class PlanBase(SQLModel):
     name: str
     price: float
     interval_days: int
     
-    org_id: int | None = Field(default=None, foreign_key="organisation.id", ondelete="CASCADE")
+    ord_id: int | None = Field(default=None, foreign_key="organisation.id", ondelete="CASCASE")
+
+class Plan(PlanBase, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+
     # 1 Plan : 1 Organisation
     organisation_owner: Organisation = Relationship(back_populates="plans")
 
     # 1 Plan : N Subscriptions
     subscriptions: list["Subscription"] = Relationship(back_populates="plan", cascade_delete=True)
+
+class PlanCreate(PlanBase):
+    pass
+
+class PlanPublic(PlanBase):
+    id: int
 
 class Subscription(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
