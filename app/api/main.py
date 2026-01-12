@@ -109,3 +109,12 @@ def get_organisations(
     ):
     organisations = session.exec(select(Organisation).all())
     return organisations
+
+@app.get("/organisations/{org_id}", response_model=OrganisationPublic)
+def get_organisation_by_id(*, session: Session = Depends(get_session), org_id: int):
+    organisation = session.get(Organisation, org_id)
+
+    if not organisation:
+        raise HTTPException(status_code=404, detail=f"Organisation not found.")
+    
+    return organisation
