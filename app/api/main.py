@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException, Query, Depends
 from sqlmodel import SQLModel, Session, create_engine, select
 from app.settings.config import settings
 from app.db.models import User, UserCreate, UserPublic, UserUpdate, Organisation, OrganisationCreate, OrganisationPublic, OrganisationPublicWithOwner
+import bcrypt
 
 app = FastAPI()
 
@@ -16,7 +17,10 @@ def create_tables():
     SQLModel.metadata.create_all(engine)
 
 def hash_password(password: str) -> str:
-    return f"Unofficially hashed {password}"
+    salt = bcrypt.gensalt()
+    hashed_password = bcrypt.hashpw(password, salt)
+
+    return hashed_password
 
 @app.get("/health")
 def health_status():
