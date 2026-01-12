@@ -96,3 +96,15 @@ class SubscriptionBase(SQLModel):
 
 class Subscription(SubscriptionBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
+
+    # 1 Subscription : 1 User
+    user: User = Relationship(back_populates="subscriptions")
+
+    # 1 Subscription : 1 Plan
+    plan: Plan = Relationship(back_populates="subscriptions")
+
+class SubscriptionCreate(SubscriptionBase):
+    pass
+
+class SubscriptionPublic(SubscriptionBase):
+    id: int
