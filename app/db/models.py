@@ -85,3 +85,14 @@ class Subscription(SQLModel, table=True):
 
     start_date: datetime
     end_date: datetime
+
+class SubscriptionBase(SQLModel):
+    user_id: int |  None = Field(default=None, foreign_key="user.id", ondelete="CASCASE")
+
+    plan_id: int | None = Field(default=None, foreign_key="plan.id", ondelete="CASCADE")
+
+    start_date: datetime
+    end_date: datetime
+
+class Subscription(SubscriptionBase, table=True):
+    id: int | None = Field(default=None, primary_key=True)
