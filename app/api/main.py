@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException, Query, Depends
 from sqlmodel import SQLModel, Session, create_engine, select
 from app.settings.config import settings
-from app.db.models import User, UserCreate, UserPublic, UserUpdate, Organisation, OrganisationCreate, OrganisationPublic, OrganisationPublicWithOwner
+from app.db.models import User, UserCreate, UserPublic, UserUpdate, Organisation, OrganisationCreate, OrganisationPublic, OrganisationPublicWithOwner, OrganisationUpdate
 import bcrypt
 
 app = FastAPI()
@@ -150,3 +150,19 @@ def delete_organisation_by_id(*, session: Session = Depends(get_session), org_id
     session.commit()
 
     return {"Organisation: {org_id} - Deleted": True}
+
+@app.patch("/organisation/{org_id}", response_model=OrganisationPublic)
+def update_organisation(*, session: Session = Depends(get_session), org_id: int, organisation: OrganisationUpdate):
+    db_organisation = session.get(Organisation, org_id)
+
+    if not db_organisation:
+        raise HTTPException(status_code=404, detail="Organisation not found.")
+    
+    organisation_data = organisation.model_dump(exclude_unset=True)
+
+    db_organisation.sqlmodel_update(organisation_data)
+    session.add(db_organisation)
+    session.commit()
+    session.refresh(db_organisation)
+
+    return db_organisation
