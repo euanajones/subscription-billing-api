@@ -138,3 +138,15 @@ def get_organisation_owner(*, session: Session = Depends(get_session), org_id: i
         raise HTTPException(status_code=404, detail="Owner not found.")
 
     return owner
+
+@app.delete("/organisation/{org_id}")
+def delete_organisation_by_id(*, session: Session = Depends(get_session), org_id: int):
+    organisation = session.get(Organisation, org_id)
+
+    if not organisation:
+        raise HTTPException(status_code=404, detail="Organisation not found.")
+    
+    session.delete(organisation)
+    session.commit()
+
+    return {"Organisation: {org_id} - Deleted": True}
