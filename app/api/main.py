@@ -82,7 +82,7 @@ def update_user(*, session: Session = Depends(get_session) ,user_id: int, user: 
     return db_user
 
 @app.delete("/users/{user_id}")
-def delete_user_by_id(*, session: Session = Depends(get_session) ,user_id: int):
+def delete_user_by_id(*, session: Session = Depends(get_session), user_id: int):
     user = session.get(User, user_id)
 
     if not user:
@@ -91,6 +91,17 @@ def delete_user_by_id(*, session: Session = Depends(get_session) ,user_id: int):
     session.delete(user)
     session.commit()
     return {"User: {user_id} - Deleted": True}
+
+@app.get("/users/{user_id}/organisations", response_model=list[OrganisationPublic])
+def get_user_organisations(*, session: Session = Depends(get_session), user_id: int):
+    user = session.get(User, user_id)
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found.")
+
+    organisations = session.exec(select(Organisation).where(Organisation.owner_id == user_id)).all()
+
+    return organisations
 
 @app.post("/organisations/create", response_model=OrganisationPublic)
 def create_organisation(
