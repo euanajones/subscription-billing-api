@@ -1,5 +1,5 @@
-from fastapi import FastAPI, HTTPException, Query, Depends
-from sqlmodel import SQLModel, Session, create_engine, select
+from fastapi import HTTPException, Query, Depends
+from sqlmodel import Session, select
 from app.db.models import User, UserCreate, UserPublic, UserUpdate, Organisation, OrganisationPublic
 from main import app, get_session, hash_password
 

@@ -1,7 +1,7 @@
-from fastapi import FastAPI, HTTPException, Query, Depends
-from sqlmodel import SQLModel, Session, create_engine, select
+from fastapi import HTTPException, Query, Depends
+from sqlmodel import Session, select
 from app.db.models import User, UserPublic, Organisation, OrganisationPublic, OrganisationUpdate, OrganisationPublicWithOwner, OrganisationCreate
-from main import app, get_session, hash_password
+from main import app, get_session
 
 @app.post("/organisations/create", response_model=OrganisationPublic)
 def create_organisation(
