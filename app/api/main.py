@@ -220,3 +220,15 @@ def update_plan(*, session: Session = Depends(get_session), plan_id: int, plan: 
     session.refresh(db_plan)
 
     return db_plan
+
+@app.delete("/plan/{plan_id}")
+def delete_plan(*, session: Session = Depends(get_session), plan_id: int):
+    plan = session.exec(Plan, plan_id)
+
+    if not plan:
+        HTTPException(status_code=404, detail="Plan not found.")
+
+    session.delete(plan)
+    session.commit()
+    
+    return {"Plan: {plan_id} - Deleted": True}
