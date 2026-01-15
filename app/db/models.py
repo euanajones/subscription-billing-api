@@ -75,6 +75,11 @@ class PlanCreate(PlanBase):
 class PlanPublic(PlanBase):
     id: int
 
+class PlanUpdate(SQLModel):
+    name: str | None = None
+    price: float | None = None
+    interval_days: int | None = None
+
 class SubscriptionBase(SQLModel):
     user_id: int |  None = Field(default=None, foreign_key="user.id", ondelete="CASCADE")
 
