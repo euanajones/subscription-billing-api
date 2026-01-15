@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException, Query, Depends
 from sqlmodel import SQLModel, Session, create_engine, select
 from app.settings.config import settings
-from app.db.models import User, UserCreate, UserPublic, UserUpdate, Organisation, OrganisationCreate, OrganisationPublic, OrganisationPublicWithOwner, OrganisationUpdate
+from app.db.models import User, UserCreate, UserPublic, UserUpdate, Organisation, OrganisationCreate, OrganisationPublic, OrganisationPublicWithOwner, OrganisationUpdate, Plan, PlanPublic
 import bcrypt
 
 app = FastAPI()
@@ -177,3 +177,21 @@ def update_organisation(*, session: Session = Depends(get_session), org_id: int,
     session.refresh(db_organisation)
 
     return db_organisation
+
+@app.get("/plan", response_model=PlanPublic)
+def get_plans(
+    *, 
+    session: Session = Depends(get_session), 
+    offset: int = 0, 
+    limit: int = Query(default=30, le=100)
+    ):
+    plans = session.exec(select(Plan)).all()
+    return plans
+
+@app.get("/plans/{plan_id}", response_model=PlanPublic)
+def get_plan_by_id(*, session: Session = Depends(get_session) ,plan_id: int):
+    plan = session.get(Plan, plan_id)
+    
+    if not plan:
+        raise HTTPException(status_code=404, detail="Plan not found.")
+    return plan
