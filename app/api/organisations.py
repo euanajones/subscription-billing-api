@@ -15,7 +15,7 @@ def create_organisation(
     session.refresh(db_organisation)
     return db_organisation
 
-@app.get("/organisations", response_model=list[OrganisationPublic])
+@app.get("/organisations", response_model=OrganisationPublic)
 def get_organisations(
     *, 
     session: Session = Depends(get_session), 
