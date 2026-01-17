@@ -33,3 +33,14 @@ def create_subscription(
     session.refresh(db_sub)
     
     return db_sub
+
+@app.delete("/subscription/{sub_id}")
+def delete_subscription(*, session: Session = Depends(get_session), sub_id: int):
+    subscription = session.exec(Subscription, sub_id)
+
+    if not subscription:
+        HTTPException(status_code=404, detail="Subscription not found.")
+
+    session.delete(subscription)
+    session.commit()
+    return {"Subscription: {sub_id} - Deleted": True}
