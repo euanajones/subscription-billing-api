@@ -1,6 +1,6 @@
 from fastapi import HTTPException, Query, Depends
 from sqlmodel import Session, select
-from app.db.models import Plan, PlanCreate, PlanPublic, PlanUpdate
+from db import *
 from main import app, get_session
 
 @app.get("/plan", response_model=PlanPublic)

@@ -1,6 +1,6 @@
 from fastapi import HTTPException, Query, Depends
 from sqlmodel import Session, select
-from app.db.models import User, UserPublic, Organisation, OrganisationPublic, OrganisationUpdate, OrganisationPublicWithOwner, OrganisationCreate
+from db import *
 from main import app, get_session
 
 @app.post("/organisations/create", response_model=OrganisationPublic)
